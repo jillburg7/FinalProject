@@ -33,15 +33,15 @@ public class HighwayTraffic extends Traffic {
 	 * @param someX
 	 * @param someY
 	 */
-	public HighwayTraffic(Frame mainGame, int someX, int someY) {
+	public HighwayTraffic(Frame mainGame, Color c, int amount, int someX, int someY) {
 		super(mainGame);
 		x = someX;
 		y = someY;
 		color = Color.blue;
-		xCoords = new int[3];
+		xCoords = new int[amount];
 		for(int i=0; i<xCoords.length; i++)
-			xCoords[i] = x+(i*6*SCALE);
-		trucks = new Rectangle[3];
+			xCoords[i] = x+(i*20*SCALE/amount);
+		trucks = new Rectangle[amount];
 		setupArray();
 	}
 	
@@ -90,11 +90,14 @@ public class HighwayTraffic extends Traffic {
 	public void paint(Graphics pane) {
 		super.paint(pane);		// call super class's paint method
 		Graphics2D pane2 = (Graphics2D)pane;
-		drawTruck(pane2);		// single morving trucks
+//		drawTruck(pane2);		// single morving trucks
 		if (truckArr) {		// for array of truck objects
-			for(int i=0; i<xCoords.length; i++)
-				xCoords[i] = x+(i*6*SCALE);	// updates position
-			drawTrucks(pane2);
+			for(int i=0; i<xCoords.length; i++) {
+				xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
+				trucks[i] = new Rectangle(xCoords[i], y, width, height);
+				pane2.draw(trucks[i]);
+			}
+//			drawTrucks(pane2);
 			
 		}
 	}
@@ -126,5 +129,8 @@ public class HighwayTraffic extends Traffic {
 			pane.fill3DRect(xCoords[i]+1, y+1, width-1, height-1, true);
 		}
 	}
+	
+
+	
 
 }

@@ -20,9 +20,7 @@ public class Frogger implements Comparable<Traffic> {
 	/**
 	 * Location of Frogger
 	 */
-	public int x;
-
-	private int y;
+	public int x, y;
 	
 	/**
 	 * Froggers lives
@@ -82,6 +80,15 @@ public class Frogger implements Comparable<Traffic> {
 		pane.setColor(Color.GREEN);
 		pane.fillOval(x+1, y+1, SCALE-2, SCALE-2);
 	}
+	
+	public int getX() {
+		return x;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
 
 	/**
 	 * Whether or not frogger has collided with harmful obstacle. RIP
@@ -91,12 +98,16 @@ public class Frogger implements Comparable<Traffic> {
 	 */
 	@Override
 	public int compareTo(Traffic o) {
-		int xLoc = o.x;
-		
-		if ((x < xLoc) || (x > xLoc))
-			return -1;
-		else
-			return 0;
+//		int xLoc = o.x;
+		int[] xLoc = o.xCoords;
+		for(int i = 0; i < o.xCoords.length; i++) {
+			if (x < xLoc[i])
+				return -1;
+			else if (x > xLoc [i])
+				return 1;
+			else
+				return 0;
+		}
+		return 0;
 	}
-	
 }

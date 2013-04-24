@@ -60,7 +60,7 @@ public class TrafficThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			while (counter < 200) {
+			while (true) {
 				counter++;		// increment counter
 				Thread.sleep(speedScale);
 				moveObject.takeNotice();

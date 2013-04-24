@@ -44,12 +44,7 @@ public class Traffic {
 	 * Dimensions and location of trucks
 	 */
 	public int x;
-
-	protected int y;
-
-	protected int width;
-
-	protected int height;
+	protected int y, width, height;
 
 	/**
 	 * Color to paint objects
@@ -59,7 +54,7 @@ public class Traffic {
 	/**
 	 * Coordinates of other objects in same "lane" of traffic
 	 */
-	protected int[] xCoords, yCoords;
+	public int[] xCoords;
 
 	/**
 	 * Position updater - based on thread
@@ -101,6 +96,7 @@ public class Traffic {
 	 */
 	public void movingLeft(){
 		move -= 2*movingHazard.counter;
+		
 	}
 	
 	/**
@@ -125,6 +121,28 @@ public class Traffic {
 	 */
 	public void paint(Graphics pane) {
 		x += move;
+		
+	}
+	
+	public int[] getxCoords() {
+		return xCoords;
+	}
+	
+	public int getY() {
+		return y;
+	}
+	
+	/**
+	 * 
+	 * @param xPoint
+	 * @param yPoint
+	 * @return
+	 */
+	public boolean isInside(int xPoint, int yPoint) {
+		for(int i = 0; i < trucks.length; i++)
+			if( trucks[i].contains(xPoint, yPoint))
+				return true;
+		return false;
 	}
 	
 	/**
@@ -134,7 +152,6 @@ public class Traffic {
 	protected void takeNotice() {
 		if (running)
 			gameFrame.repaint();
-		
 	}
 	
 	/**

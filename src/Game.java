@@ -69,7 +69,6 @@ public class Game extends Frame implements KeyListener {
 	 */
 	private Traffic[] traffic = new Traffic[10];
 	
-	private Traffic[] trucks = new Traffic[3];
 	
 	
 	
@@ -86,7 +85,7 @@ public class Game extends Frame implements KeyListener {
 	 */
 	public Game() {
 		setTitle("Frogger!"); // name, location and size of our frame
-		setBounds(150, 150, 20*SCALE, 25*SCALE);
+		setBounds(0, 150, 20*SCALE, 25*SCALE);
 		setBackground(Color.BLACK);
 		
 		
@@ -105,7 +104,7 @@ public class Game extends Frame implements KeyListener {
 		traffic[2] = new HighwayTraffic(this, Color.RED, 	1*SCALE,	20*SCALE);
 		traffic[3] = new HighwayTraffic(this, Color.CYAN,	19*SCALE,	21*SCALE);
 		
-		traffic[4] = new HighwayTraffic(this, 1*SCALE, 22*SCALE);
+		traffic[4] = new HighwayTraffic(this, Color.orange, 3, 1*SCALE, 22*SCALE);
 		
 //		initialize(traffic);
 		
@@ -131,7 +130,7 @@ public class Game extends Frame implements KeyListener {
 	
 	private void initialize(Traffic[] movingTrucks) {
 		for(int i = 0; i < movingTrucks.length; i++) {
-			movingTrucks[i] = new HighwayTraffic(this, (20*(i%2))*SCALE, (i+18)*SCALE);
+			movingTrucks[i] = new HighwayTraffic(this, Color.green, 3, (20*(i%2))*SCALE, (i+18)*SCALE);
 			if (i % 2 == 0)
 				traffic[i].movingRight();
 			else
@@ -156,14 +155,21 @@ public class Game extends Frame implements KeyListener {
 			timerDisplay.paint(pane);
 			for(int i=0; i<traffic.length; i++){
 				traffic[i].paint(pane);
-//				if((traffic[i].x % (20*SCALE) == 0) || (traffic[i].x == 0)) {
-////					initialize(traffic);
-//					traffic[i].reset();
+			//	if((traffic[4].x % (10*SCALE) == 0)) { // || (traffic[i].x == 0)) {
+	
+				
+//				int[] xLoc = traffic[4].getxCoords();
+//				for(int i=0; i<traffic[4].xCoords.length; i++) {
+//					traffic[4].xCoords[i] = traffic[4].xCoords[i] % (10*SCALE);
+//				//	traffic[4].paint(pane);
 //				}
+				
+				traffic[4].x = traffic[4].x % (10*SCALE);
 			}
+			
+			
+			
 		}
-		
-		
 		
 		if (gameStarted)
 			startTime();
@@ -203,8 +209,11 @@ public class Game extends Frame implements KeyListener {
 	 * drownt. 
 	 */
 	private void checkCollision() {
-		if(frogger.compareTo(traffic[4]) == 0)	// compares objects
-			gameOver();
+//		if(frogger.compareTo(traffic[4]) == 0)	// compares objects
+		for(int i = 0; i<traffic.length; i++){
+//			if (traffic[i].isInside(frogger.getX(), frogger.getY())) 
+				gameOver();
+		}
 //			Toolkit.getDefaultToolkit().beep();
 		if (dead)
 			gameOver();
