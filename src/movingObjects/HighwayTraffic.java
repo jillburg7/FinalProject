@@ -13,12 +13,6 @@ import java.awt.Rectangle;
  */
 public class HighwayTraffic extends Traffic {
 
-	/**
-	 * To make sure we can draw array of trucks before killing the
-	 * program - TESTING PURPOSES
-	 */
-	private boolean truckArr = false;
-	
 	
 	/**
 	 * Default constructor - calls parent constructor
@@ -78,7 +72,6 @@ public class HighwayTraffic extends Traffic {
 		height = SCALE;
 		for (int i =0; i < xCoords.length; i++)
 			trucks[i] = new Rectangle(xCoords[i], y, width, height);
-		truckArr = true;
 		movingRight();
 	}
 	
@@ -91,15 +84,14 @@ public class HighwayTraffic extends Traffic {
 		super.paint(pane);		// call super class's paint method
 		Graphics2D pane2 = (Graphics2D)pane;
 //		drawTruck(pane2);		// single morving trucks
-		if (truckArr) {		// for array of truck objects
-			for(int i=0; i<xCoords.length; i++) {
-				xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
-				trucks[i] = new Rectangle(xCoords[i], y, width, height);
-				pane2.draw(trucks[i]);
-			}
-//			drawTrucks(pane2);
-			
+		for(int i=0; i<xCoords.length; i++) {
+			xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
+			trucks[i] = new Rectangle(xCoords[i], y, width, height);
+			pane2.draw(trucks[i]);
+			pane2.setColor(Color.LIGHT_GRAY);
+			pane2.fill(trucks[i]);
 		}
+//			drawTrucks(pane2);
 	}
 	
 	/**

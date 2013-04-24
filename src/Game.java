@@ -99,14 +99,13 @@ public class Game extends Frame implements KeyListener {
 		frogger = new Frogger();
 		timerDisplay = new TimerDisplay(this, 10);
 		
-		traffic[0] = new HighwayTraffic(this, Color.GREEN,	1*SCALE,	18*SCALE);
-		traffic[1] = new HighwayTraffic(this, Color.PINK,	19*SCALE,	19*SCALE);
-		traffic[2] = new HighwayTraffic(this, Color.RED, 	1*SCALE,	20*SCALE);
-		traffic[3] = new HighwayTraffic(this, Color.CYAN,	19*SCALE,	21*SCALE);
+//		traffic[0] = new HighwayTraffic(this, Color.GREEN, 4, 1*SCALE, 18*SCALE);
+//		traffic[1] = new HighwayTraffic(this, Color.PINK, 4, 19*SCALE, 19*SCALE);
+//		traffic[2] = new HighwayTraffic(this, Color.RED, 4, 1*SCALE, 20*SCALE);
+//		traffic[3] = new HighwayTraffic(this, Color.CYAN, 4, 19*SCALE, 21*SCALE);
+//		traffic[4] = new HighwayTraffic(this, Color.orange, 4, 1*SCALE, 22*SCALE);
 		
-		traffic[4] = new HighwayTraffic(this, Color.orange, 3, 1*SCALE, 22*SCALE);
-		
-//		initialize(traffic);
+		initialize(traffic);
 		
 		
 		traffic[5] = new RiverTraffic(this, Color.ORANGE, 19*SCALE, 5*SCALE);
@@ -129,7 +128,8 @@ public class Game extends Frame implements KeyListener {
 	}
 	
 	private void initialize(Traffic[] movingTrucks) {
-		for(int i = 0; i < movingTrucks.length; i++) {
+//		for(int i = 0; i < movingTrucks.length; i++) {
+		for(int i = 0; i < 5; i++) {
 			movingTrucks[i] = new HighwayTraffic(this, Color.green, 3, (20*(i%2))*SCALE, (i+18)*SCALE);
 			if (i % 2 == 0)
 				traffic[i].movingRight();
@@ -153,21 +153,25 @@ public class Game extends Frame implements KeyListener {
 			pane2.drawString("Frogger!", 150, 2*SCALE);
 			frogger.paint(pane);
 			timerDisplay.paint(pane);
-			for(int i=0; i<traffic.length; i++){
-				traffic[i].paint(pane);
+
 			//	if((traffic[4].x % (10*SCALE) == 0)) { // || (traffic[i].x == 0)) {
-	
+			for(int i=0; i<traffic.length; i++){
+				for(int j=0; j < 5; j++) {
+					traffic[j].x = traffic[j].x % (5*SCALE);
+				}
+				traffic[i].paint(pane);
+			}
 				
 //				int[] xLoc = traffic[4].getxCoords();
 //				for(int i=0; i<traffic[4].xCoords.length; i++) {
 //					traffic[4].xCoords[i] = traffic[4].xCoords[i] % (10*SCALE);
 //				//	traffic[4].paint(pane);
 //				}
+//				traffic[4].xCoords[2] = traffic[4].xCoords[2] % (10*SCALE);
+//				traffic[4].paint(pane);
 				
-				traffic[4].x = traffic[4].x % (10*SCALE);
-			}
 			
-			
+
 			
 		}
 		
