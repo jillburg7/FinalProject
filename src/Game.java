@@ -161,16 +161,7 @@ public class Game extends Frame implements KeyListener {
 				}
 				traffic[i].paint(pane);
 			}
-				
-//				int[] xLoc = traffic[4].getxCoords();
-//				for(int i=0; i<traffic[4].xCoords.length; i++) {
-//					traffic[4].xCoords[i] = traffic[4].xCoords[i] % (10*SCALE);
-//				//	traffic[4].paint(pane);
-//				}
-//				traffic[4].xCoords[2] = traffic[4].xCoords[2] % (10*SCALE);
-//				traffic[4].paint(pane);
-				
-			
+
 
 			
 		}
@@ -215,7 +206,7 @@ public class Game extends Frame implements KeyListener {
 	private void checkCollision() {
 //		if(frogger.compareTo(traffic[4]) == 0)	// compares objects
 		for(int i = 0; i<traffic.length; i++){
-//			if (traffic[i].isInside(frogger.getX(), frogger.getY())) 
+			if (traffic[i].isInside(frogger.getX(), frogger.getY())) 
 				gameOver();
 		}
 //			Toolkit.getDefaultToolkit().beep();

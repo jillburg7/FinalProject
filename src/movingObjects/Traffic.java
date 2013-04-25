@@ -139,10 +139,11 @@ public class Traffic {
 	 * @return
 	 */
 	public boolean isInside(int xPoint, int yPoint) {
+		boolean isInside = false;
 		for(int i = 0; i < trucks.length; i++)
-			if( trucks[i].contains(xPoint, yPoint))
-				return true;
-		return false;
+			if(trucks[i].contains(xPoint, yPoint))
+				isInside = true;
+		return isInside;
 	}
 	
 	/**
