@@ -68,7 +68,7 @@ public class HighwayTraffic extends Traffic {
 	 * default setup() array.
 	 */
 	private void setupArray(){
-		width = 2*SCALE;
+		width = (int) (2*SCALE);
 		height = SCALE;
 		for (int i =0; i < xCoords.length; i++)
 			trucks[i] = new Rectangle(xCoords[i], y, width, height);
@@ -122,7 +122,21 @@ public class HighwayTraffic extends Traffic {
 		}
 	}
 	
-
+	/**
+	 * 
+	 * @param xPoint
+	 * @param yPoint
+	 * @return
+	 */
+	@Override
+	public boolean isInside(int xPoint, int yPoint) {
+		boolean isInside = false;
+		for(int i = 0; i < trucks.length; i++) {
+			if(trucks[i].contains(xPoint, yPoint) || trucks[i].contains(xPoint+SCALE, yPoint))
+				return true;
+		}
+		return isInside;
+	}
 	
 
 }

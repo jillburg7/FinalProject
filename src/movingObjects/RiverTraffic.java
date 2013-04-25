@@ -25,11 +25,16 @@ public class RiverTraffic extends Traffic {
 	 * @param someX
 	 * @param someY
 	 */
-	public RiverTraffic(Frame mainGame, int someX, int someY) {
+	public RiverTraffic(Frame mainGame, Color c, int amount, int someX, int someY) {
 		super(mainGame);
 		x = someX;
 		y = someY;
-		setup();
+		color = Color.blue;
+		xCoords = new int[amount];
+		for(int i=0; i<xCoords.length; i++)
+			xCoords[i] = x+(i*20*SCALE/amount);
+		trucks = new Rectangle[amount];
+		setupArray();
 	}
 	
 	/**
@@ -56,6 +61,18 @@ public class RiverTraffic extends Traffic {
 	}
 
 	
+	/**
+	 * Sets up the array of truck objects to draw.
+	 * After bugs have been completely removed, this will be the 
+	 * default setup() array.
+	 */
+	private void setupArray(){
+		width = (int) (1.5*SCALE);
+		height = SCALE;
+		for (int i =0; i < xCoords.length; i++)
+			trucks[i] = new Rectangle(xCoords[i], y, width, height);
+		movingRight();
+	}
 	
 	/**
 	 * Draws river objects
@@ -64,8 +81,15 @@ public class RiverTraffic extends Traffic {
 	public void paint(Graphics pane) {
 		super.paint(pane);
 		Graphics2D pane2 = (Graphics2D)pane;
-		drawLog(pane2);
-		pane2.setBackground(Color.BLUE);
+//		drawLog(pane2);
+//		pane2.setBackground(Color.BLUE);
+		for(int i=0; i<xCoords.length; i++) {
+			xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
+			trucks[i] = new Rectangle(xCoords[i], y, width, height);
+			pane2.draw(trucks[i]);
+			pane2.setColor(Color.orange);
+			pane2.fill(trucks[i]);
+		}
 	}
 	
 	/**
@@ -85,6 +109,19 @@ public class RiverTraffic extends Traffic {
 	 */
 	private void drawLogs(Graphics2D pane) {
 		
+	}
+
+	/**
+	 * Checks to see if Frogger is "inside" of 
+	 */
+	@Override
+	public boolean isInside(int xPoint, int yPoint) {
+		boolean isInside = false;
+		for(int i = 0; i < trucks.length; i++) {
+			if(trucks[i].contains(xPoint, yPoint) || trucks[i].contains(xPoint+SCALE, yPoint))
+				return true;
+		}
+		return isInside;
 	}
 	
 }

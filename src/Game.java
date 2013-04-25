@@ -16,6 +16,7 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -26,38 +27,38 @@ import movingObjects.Traffic;
 
 
 public class Game extends Frame implements KeyListener {
-	
+
 	/**
 	 * Object scale factor
 	 */
 	private final int SCALE = 20;
-	
+
 	/**
 	 * A handle on the window; terminates window when requested.
 	 */
 	private WindowCloser window;
-	
+
 	/**
 	 * So the System doesn't try to paint the buttons before they are
 	 * initialized
 	 */
 	private boolean initializationComplete = false;
-	
+
 	/** 
 	 * To tell if the game has started or not
 	 */
 	private boolean gameStarted = false;
-	
+
 	/**
 	 * To decided it frogger died or game over
 	 */
 	private boolean dead = false;
-	
+
 	/**
 	 * Player character
 	 */
 	private Frogger frogger;
-	
+
 	/**
 	 * Handles the game timer to display amount of time elapsed in the
 	 * round. Starts the timer thread while the game is being played
@@ -68,17 +69,17 @@ public class Game extends Frame implements KeyListener {
 	 * Array of Traffic Hazards, continuously moving on the window
 	 */
 	private Traffic[] traffic = new Traffic[10];
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Starts game
 	 */
 	public static void main(String[] args) {
 		new Game();
 	}
-	
+
 	/**
 	 * Default constructor - sets up the frame & all objects to be 
 	 * drawn in the window.
@@ -87,32 +88,32 @@ public class Game extends Frame implements KeyListener {
 		setTitle("Frogger!"); // name, location and size of our frame
 		setBounds(0, 150, 20*SCALE, 25*SCALE);
 		setBackground(Color.BLACK);
-		
-		
+
+
 		setVisible(true);
-		
+
 		window = new WindowCloser();
 		addWindowListener(window);
-		
+
 		addKeyListener(this);
-		
+
 		frogger = new Frogger();
 		timerDisplay = new TimerDisplay(this, 10);
-		
-//		traffic[0] = new HighwayTraffic(this, Color.GREEN, 4, 1*SCALE, 18*SCALE);
-//		traffic[1] = new HighwayTraffic(this, Color.PINK, 4, 19*SCALE, 19*SCALE);
-//		traffic[2] = new HighwayTraffic(this, Color.RED, 4, 1*SCALE, 20*SCALE);
-//		traffic[3] = new HighwayTraffic(this, Color.CYAN, 4, 19*SCALE, 21*SCALE);
-//		traffic[4] = new HighwayTraffic(this, Color.orange, 4, 1*SCALE, 22*SCALE);
-		
+
+		//		traffic[0] = new HighwayTraffic(this, Color.GREEN, 4, 1*SCALE, 18*SCALE);
+		//		traffic[1] = new HighwayTraffic(this, Color.PINK, 4, 19*SCALE, 19*SCALE);
+		//		traffic[2] = new HighwayTraffic(this, Color.RED, 4, 1*SCALE, 20*SCALE);
+		//		traffic[3] = new HighwayTraffic(this, Color.CYAN, 4, 19*SCALE, 21*SCALE);
+		//		traffic[4] = new HighwayTraffic(this, Color.orange, 4, 1*SCALE, 22*SCALE);
+
 		initialize(traffic);
-		
-		
-		traffic[5] = new RiverTraffic(this, Color.ORANGE, 19*SCALE, 5*SCALE);
-		traffic[6] = new RiverTraffic(this, Color.ORANGE, 1*SCALE, 6*SCALE);
-		traffic[7] = new RiverTraffic(this, Color.ORANGE, 19*SCALE, 7*SCALE);
-		traffic[8] = new RiverTraffic(this, Color.ORANGE, 1*SCALE, 8*SCALE);
-		traffic[9] = new RiverTraffic(this, Color.ORANGE, 19*SCALE, 9*SCALE);
+
+		//		
+		//		traffic[5] = new RiverTraffic(this, Color.ORANGE, 19*SCALE, 5*SCALE);
+		//		traffic[6] = new RiverTraffic(this, Color.ORANGE, 1*SCALE, 6*SCALE);
+		//		traffic[7] = new RiverTraffic(this, Color.ORANGE, 19*SCALE, 7*SCALE);
+		//		traffic[8] = new RiverTraffic(this, Color.ORANGE, 1*SCALE, 8*SCALE);
+		//		traffic[9] = new RiverTraffic(this, Color.ORANGE, 19*SCALE, 9*SCALE);
 
 		repaint();
 
@@ -122,56 +123,66 @@ public class Game extends Frame implements KeyListener {
 			else
 				traffic[i].movingLeft();
 		}
-		
-		
 		initializationComplete = true;
 	}
-	
+
 	private void initialize(Traffic[] movingTrucks) {
-//		for(int i = 0; i < movingTrucks.length; i++) {
-		for(int i = 0; i < 5; i++) {
-			movingTrucks[i] = new HighwayTraffic(this, Color.green, 3, (20*(i%2))*SCALE, (i+18)*SCALE);
-			if (i % 2 == 0)
+		//		for(int i = 0; i < movingTrucks.length; i++) {
+		for(int i = 0; i < movingTrucks.length/2; i++) {
+
+			if (i % 2 == 0) {
+				movingTrucks[i] = new HighwayTraffic(this, Color.green, 2, (20*(i%2))*SCALE, (i+16)*SCALE);
 				traffic[i].movingRight();
-			else
+			}
+			else {
+				movingTrucks[i] = new HighwayTraffic(this, Color.green, 3, (20*(i%2))*SCALE, (i+16)*SCALE);
 				traffic[i].movingLeft();
+			}
+		}
+		// initializes logs
+		for(int i = movingTrucks.length/2; i < movingTrucks.length; i++) {
+			if (i % 2 == 0) {
+				movingTrucks[i] = new RiverTraffic(this, Color.green, 3, (20*(i%2))*SCALE, (i+2)*SCALE);
+				traffic[i].movingRight();
+			}
+			else {
+				movingTrucks[i] = new RiverTraffic(this, Color.green, 2, (20*(i%2))*SCALE, (i+2)*SCALE);
+				traffic[i].movingLeft();
+			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Paints the graphics on the window
 	 */
 	public void paint(Graphics pane) {
-//		System.out.println("PAINTING");
 		Graphics2D pane2 = (Graphics2D)pane;
 		Font myFont = new Font("Monospaced", NORMAL, 20);
-		
+
+		if (gameStarted) {
+			startTime();
+			checkCollision();
+		}
+		else if(dead) {	
+			pane2.setFont(myFont);
+			pane2.setColor(Color.red);
+			pane2.drawString("Game Over!", 150, 13*SCALE);
+		}
+
 		if (initializationComplete) {
 			pane2.setFont(myFont);
 			pane2.setColor(Color.WHITE);
 			pane2.drawString("Frogger!", 150, 2*SCALE);
 			frogger.paint(pane);
 			timerDisplay.paint(pane);
-
-			//	if((traffic[4].x % (10*SCALE) == 0)) { // || (traffic[i].x == 0)) {
 			for(int i=0; i<traffic.length; i++){
-				for(int j=0; j < 5; j++) {
-					traffic[j].x = traffic[j].x % (5*SCALE);
-				}
+				traffic[i].x = traffic[i].x % (10*SCALE);
 				traffic[i].paint(pane);
 			}
-
-
-			
 		}
-		
-		if (gameStarted)
-			startTime();
-		else if(dead)
-			gameOver();
 	}
-	
+
 	/**
 	 * Starts the game timer, which Counts down the time to complete a
 	 * round of Frogger. Only starts the timer when key is pressed and
@@ -189,35 +200,37 @@ public class Game extends Frame implements KeyListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Handles what happens when Frogger loses all of its lives
 	 */
 	private void gameOver() {
-//		if(frogger.lives == 0) 
-		for(int i=0; i<traffic.length; i++)
-			traffic[i].reset();
+		timerDisplay.stopTime();
+		for(int i = 0; i < traffic.length; i++)
+			traffic[i].stopTraffic();
+		Toolkit.getDefaultToolkit().beep();
+		repaint();
 	}
-	
+
 	/**
 	 * To check if the frogger is safe; i.e., not roadkill, fish food,
 	 * drownt. 
 	 */
 	private void checkCollision() {
-//		if(frogger.compareTo(traffic[4]) == 0)	// compares objects
 		for(int i = 0; i<traffic.length; i++){
-			if (traffic[i].isInside(frogger.getX(), frogger.getY())) 
+			if (traffic[i].isInside(frogger.getX(), frogger.getY())) {
+				dead = true;
 				gameOver();
-		}
-//			Toolkit.getDefaultToolkit().beep();
+			}
+		}	
 		if (dead)
 			gameOver();
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 	/**
 	 * KeyListener interface that handles events triggered by keyboard
 	 * presses, releases, and typed. 
@@ -226,7 +239,7 @@ public class Game extends Frame implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		if (dead == false) {
 			gameStarted = true;
-		
+
 			if (e.getKeyCode() == KeyEvent.VK_LEFT)
 				frogger.move(-SCALE, 0);
 			else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
@@ -235,12 +248,12 @@ public class Game extends Frame implements KeyListener {
 				frogger.move(0, -SCALE);
 			else if (e.getKeyCode() == KeyEvent.VK_DOWN)
 				frogger.move(0, SCALE);
-			
+
 			repaint();
 			checkCollision();
 		}
 	}
-	
+
 	@Override
 	public void keyTyped(KeyEvent e) {}
 

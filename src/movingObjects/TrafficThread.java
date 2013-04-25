@@ -24,6 +24,7 @@ public class TrafficThread extends Thread {
 	 */
 	private int speedScale = 100;
 	
+	private long lastFrame = 0;
 	
 	/**
 	 * Default constructor.
@@ -59,10 +60,13 @@ public class TrafficThread extends Thread {
 	 */
 	@Override
 	public void run() {
+		lastFrame = System.nanoTime() - speedScale;
+		
 		try {
 			while (true) {
 				counter++;		// increment counter
-				Thread.sleep(speedScale);
+				Thread.sleep(speedScale - (System.nanoTime() - lastFrame) / 1000000);
+				lastFrame = System.nanoTime();
 				moveObject.takeNotice();
 			}
 		} catch (InterruptedException iex) {}

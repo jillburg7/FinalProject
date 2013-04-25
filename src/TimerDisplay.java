@@ -111,4 +111,9 @@ public class TimerDisplay {
 		}
 	}
 	
+	protected void stopTime() {
+		running = false;
+		timer.stop();
+	}
+	
 }

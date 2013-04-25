@@ -13,7 +13,7 @@ import java.awt.Shape;
  * 
  * @author JillianJiggs
  */
-public class Traffic {
+public abstract class Traffic {
 
 	/**
 	 * refresh the timer graphics
@@ -138,13 +138,7 @@ public class Traffic {
 	 * @param yPoint
 	 * @return
 	 */
-	public boolean isInside(int xPoint, int yPoint) {
-		boolean isInside = false;
-		for(int i = 0; i < trucks.length; i++)
-			if(trucks[i].contains(xPoint, yPoint))
-				isInside = true;
-		return isInside;
-	}
+	public abstract boolean isInside(int xPoint, int yPoint);
 	
 	/**
 	 * While the Hazard thread is running, the traffic graphics need 
@@ -159,8 +153,8 @@ public class Traffic {
 	 * Kills game (currently), evently to be used for reset of game 
 	 * and rounds, until game is over = no more Frogger lives. RIP
 	 */
-	public void reset() {
-		movingHazard.counter = 0;
-		//running = false;
+	public void stopTraffic() {
+		running = false;
+		movingHazard.stop();
 	}
 }
