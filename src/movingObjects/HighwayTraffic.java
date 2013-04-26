@@ -31,7 +31,7 @@ public class HighwayTraffic extends Traffic {
 		super(mainGame);
 		x = someX;
 		y = someY;
-		color = Color.blue;
+		color = c;
 		xCoords = new int[amount];
 		for(int i=0; i<xCoords.length; i++)
 			xCoords[i] = x+(i*20*SCALE/amount);
@@ -83,15 +83,7 @@ public class HighwayTraffic extends Traffic {
 	public void paint(Graphics pane) {
 		super.paint(pane);		// call super class's paint method
 		Graphics2D pane2 = (Graphics2D)pane;
-//		drawTruck(pane2);		// single morving trucks
-		for(int i=0; i<xCoords.length; i++) {
-			xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
-			trucks[i] = new Rectangle(xCoords[i], y, width, height);
-			pane2.draw(trucks[i]);
-			pane2.setColor(Color.LIGHT_GRAY);
-			pane2.fill(trucks[i]);
-		}
-//			drawTrucks(pane2);
+		drawTrucks(pane2);
 	}
 	
 	/**
@@ -114,11 +106,19 @@ public class HighwayTraffic extends Traffic {
 	 * @param pane
 	 */
 	private void drawTrucks(Graphics2D pane) {
-		pane.setColor(color);
-		for (int i = 0; i < xCoords.length; i++) {
-			pane.draw3DRect(xCoords[i]+width, y+1, width/4, height-2, true);
+		for(int i=0; i<xCoords.length; i++) {
+			xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
+			pane.setColor(color);
+			trucks[i] = new Rectangle(xCoords[i], y, width, height);
+			pane.draw(trucks[i]);
+			
+			// this isn't being checked for collision!! - fix
+			if (move < 0)
+				pane.draw(new Rectangle(xCoords[i]-SCALE/2, y+1, width/4, height-2));
+			else
+				pane.draw(new Rectangle(xCoords[i]+width, y+1, width/4, height-2));
 			pane.setColor(Color.LIGHT_GRAY);
-			pane.fill3DRect(xCoords[i]+1, y+1, width-1, height-1, true);
+			pane.fill(new Rectangle(xCoords[i]+1, y+1, width-1, height-1));
 		}
 	}
 	

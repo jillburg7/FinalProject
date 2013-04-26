@@ -19,6 +19,8 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import movingObjects.Frogger;
 import movingObjects.HighwayTraffic;
@@ -26,7 +28,7 @@ import movingObjects.RiverTraffic;
 import movingObjects.Traffic;
 
 
-public class Game extends Frame implements KeyListener {
+public class Game extends Frame implements KeyListener, MouseListener {
 
 	/**
 	 * Object scale factor
@@ -70,7 +72,10 @@ public class Game extends Frame implements KeyListener {
 	 */
 	private Traffic[] traffic = new Traffic[10];
 
-
+	/**
+	 * Play again button
+	 */
+	private Button butt;
 
 
 	/**
@@ -88,67 +93,46 @@ public class Game extends Frame implements KeyListener {
 		setTitle("Frogger!"); // name, location and size of our frame
 		setBounds(0, 150, 20*SCALE, 25*SCALE);
 		setBackground(Color.BLACK);
-
-
 		setVisible(true);
 
 		window = new WindowCloser();
 		addWindowListener(window);
-
+		
 		addKeyListener(this);
 
 		frogger = new Frogger();
 		timerDisplay = new TimerDisplay(this, 10);
-
-		//		traffic[0] = new HighwayTraffic(this, Color.GREEN, 4, 1*SCALE, 18*SCALE);
-		//		traffic[1] = new HighwayTraffic(this, Color.PINK, 4, 19*SCALE, 19*SCALE);
-		//		traffic[2] = new HighwayTraffic(this, Color.RED, 4, 1*SCALE, 20*SCALE);
-		//		traffic[3] = new HighwayTraffic(this, Color.CYAN, 4, 19*SCALE, 21*SCALE);
-		//		traffic[4] = new HighwayTraffic(this, Color.orange, 4, 1*SCALE, 22*SCALE);
-
+		butt = new Button("Try Again", 175, 13*SCALE, 50, 50);
 		initialize(traffic);
 
-		//		
-		//		traffic[5] = new RiverTraffic(this, Color.ORANGE, 19*SCALE, 5*SCALE);
-		//		traffic[6] = new RiverTraffic(this, Color.ORANGE, 1*SCALE, 6*SCALE);
-		//		traffic[7] = new RiverTraffic(this, Color.ORANGE, 19*SCALE, 7*SCALE);
-		//		traffic[8] = new RiverTraffic(this, Color.ORANGE, 1*SCALE, 8*SCALE);
-		//		traffic[9] = new RiverTraffic(this, Color.ORANGE, 19*SCALE, 9*SCALE);
-
 		repaint();
+		
+		initializationComplete = true;
+	}
 
+	private void initialize(Traffic[] movingObjects) {
+		// initializes trucks
+		for(int i = 0; i < movingObjects.length/2; i++) {
+
+			if (i % 2 == 0)
+				movingObjects[i] = new HighwayTraffic(this, Color.green, 2, (20*(i%2))*SCALE, (i+16)*SCALE);
+			else
+				movingObjects[i] = new HighwayTraffic(this, Color.pink, 3, (20*(i%2))*SCALE, (i+16)*SCALE);
+		}
+
+		// initializes logs
+		for(int i = movingObjects.length/2; i < movingObjects.length; i++) {
+			if (i % 2 == 0)
+				movingObjects[i] = new RiverTraffic(this, Color.white, 3, (20*(i%2))*SCALE, (i+2)*SCALE);
+			else
+				movingObjects[i] = new RiverTraffic(this, Color.white, 2, (20*(i%2))*SCALE, (i+2)*SCALE);
+		}
+		
 		for(int i = 0; i<traffic.length; i++) {
 			if (i % 2 == 0)
 				traffic[i].movingRight();
 			else
 				traffic[i].movingLeft();
-		}
-		initializationComplete = true;
-	}
-
-	private void initialize(Traffic[] movingTrucks) {
-		//		for(int i = 0; i < movingTrucks.length; i++) {
-		for(int i = 0; i < movingTrucks.length/2; i++) {
-
-			if (i % 2 == 0) {
-				movingTrucks[i] = new HighwayTraffic(this, Color.green, 2, (20*(i%2))*SCALE, (i+16)*SCALE);
-				traffic[i].movingRight();
-			}
-			else {
-				movingTrucks[i] = new HighwayTraffic(this, Color.green, 3, (20*(i%2))*SCALE, (i+16)*SCALE);
-				traffic[i].movingLeft();
-			}
-		}
-		// initializes logs
-		for(int i = movingTrucks.length/2; i < movingTrucks.length; i++) {
-			if (i % 2 == 0) {
-				movingTrucks[i] = new RiverTraffic(this, Color.green, 3, (20*(i%2))*SCALE, (i+2)*SCALE);
-				traffic[i].movingRight();
-			}
-			else {
-				movingTrucks[i] = new RiverTraffic(this, Color.green, 2, (20*(i%2))*SCALE, (i+2)*SCALE);
-				traffic[i].movingLeft();
-			}
 		}
 	}
 
@@ -168,6 +152,8 @@ public class Game extends Frame implements KeyListener {
 			pane2.setFont(myFont);
 			pane2.setColor(Color.red);
 			pane2.drawString("Game Over!", 150, 13*SCALE);
+			frogger.lives -= 1;
+			butt.paint(pane2);
 		}
 
 		if (initializationComplete) {
@@ -259,4 +245,45 @@ public class Game extends Frame implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int x = e.getX();
+		int y = e.getY();
+
+		if (butt.isInside(x, y)) {
+			Traffic[] traffic = new Traffic[10];
+			initialize(traffic);
+			timerDisplay = new TimerDisplay(this, 10);
+			frogger.reset();
+			dead = false;
+			initializationComplete = true;
+			repaint();
+		}
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
 }

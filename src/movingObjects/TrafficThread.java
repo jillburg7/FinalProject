@@ -22,7 +22,7 @@ public class TrafficThread extends Thread {
 	 * Speed to control how fast the objects are moving based on the
 	 * thread speed.
 	 */
-	private int speedScale = 100;
+	private int speedScale;
 	
 	private long lastFrame = 0;
 	
@@ -33,7 +33,9 @@ public class TrafficThread extends Thread {
 	public TrafficThread() {
 		super("TrafficThread");	// a name for the thread
 		moveObject = null;		// no one will be notified
+		speedScale = 100;
 	}
+	
 	/**
 	 * Constructor intializes the object
 	 * @param someTraffic	object to notify
@@ -41,7 +43,8 @@ public class TrafficThread extends Thread {
 	public TrafficThread(Traffic someTraffic) {
 		super("TrafficThread");		// a name for the thread
 		moveObject = someTraffic;	// object to notify
-	}
+		speedScale = 100;
+	}	
 	
 	/**
 	 * To change the speed of the thread
@@ -69,6 +72,8 @@ public class TrafficThread extends Thread {
 				lastFrame = System.nanoTime();
 				moveObject.takeNotice();
 			}
-		} catch (InterruptedException iex) {}
+		} catch (InterruptedException iex) {
+			System.out.println("sucks to be you");
+		}
 	}
 }

@@ -124,6 +124,10 @@ public abstract class Traffic {
 		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int[] getxCoords() {
 		return xCoords;
 	}
@@ -156,5 +160,10 @@ public abstract class Traffic {
 	public void stopTraffic() {
 		running = false;
 		movingHazard.stop();
+	}
+	
+	public void restart() {
+		running = true;
+		
 	}
 }

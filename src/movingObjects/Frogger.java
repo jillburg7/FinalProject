@@ -34,6 +34,7 @@ public class Frogger implements Comparable<Traffic> {
 	public Frogger() {
 		x = 9*SCALE;
 		y = 23*SCALE;
+		lives = 3;
 	}
 	
 	
@@ -43,12 +44,10 @@ public class Frogger implements Comparable<Traffic> {
 	 * @param vertical
 	 */
 	public void move(int horizontal, int vertical){
-
 		if ((x+horizontal+1)>0 && (x+horizontal)<(20*SCALE))
 			x = x + horizontal;
 		if ((y+vertical)>(3*SCALE) && (y+vertical)<(23*SCALE))
-			y = y + vertical;
-		
+			y = y + vertical;	
 	}
 	
 	/**
@@ -67,6 +66,7 @@ public class Frogger implements Comparable<Traffic> {
 	public void paint(Graphics pane) {
 		Graphics2D pane2 = (Graphics2D)pane;
 		updatePos(pane2);
+		drawLives(pane2);
 	}
 	
 	/**
@@ -75,18 +75,42 @@ public class Frogger implements Comparable<Traffic> {
 	 */
 	private void updatePos(Graphics2D pane) {
 		pane.setColor(Color.BLACK);
-		
 		pane.drawOval(x, y, SCALE, SCALE);
 		pane.setColor(Color.GREEN);
 		pane.fillOval(x+1, y+1, SCALE-2, SCALE-2);
 	}
 	
+	private void drawLives(Graphics2D pane) {
+		for(int i = 0; i < livesLeft(); i++) {
+			pane.drawOval(20+(5*i*SCALE/6), 24*SCALE, SCALE/2, SCALE/2);
+			pane.fillOval(20+(5*i*SCALE/6), 24*SCALE, SCALE/2, SCALE/2);
+		}
+	}
+	
+	/**
+	 * gets Froggers (top-left) x location
+	 * @return x coordinate location
+	 */
 	public int getX() {
 		return x;
 	}
 	
+	/**
+	 * gets Froggers (top-left) y location
+	 * @return y coordinate location
+	 */
 	public int getY() {
 		return y;
+	}
+	
+	protected int livesLeft() {
+		return lives;
+	}
+	
+	public void reset() {
+		System.out.println("Frogger = dead");
+		x = 9*SCALE;
+		y = 23*SCALE;
 	}
 	
 
@@ -98,7 +122,6 @@ public class Frogger implements Comparable<Traffic> {
 	 */
 	@Override
 	public int compareTo(Traffic o) {
-//		int xLoc = o.x;
 		int[] xLoc = o.xCoords;
 		for(int i = 0; i < o.xCoords.length; i++) {
 			if (x < xLoc[i])

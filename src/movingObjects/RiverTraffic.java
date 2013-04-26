@@ -67,7 +67,7 @@ public class RiverTraffic extends Traffic {
 	 * default setup() array.
 	 */
 	private void setupArray(){
-		width = (int) (1.5*SCALE);
+		width = 2*SCALE;
 		height = SCALE;
 		for (int i =0; i < xCoords.length; i++)
 			trucks[i] = new Rectangle(xCoords[i], y, width, height);
