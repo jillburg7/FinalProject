@@ -22,11 +22,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import movingObjects.Frogger;
-import movingObjects.HighwayTraffic;
-import movingObjects.RiverTraffic;
-import movingObjects.Traffic;
-
 
 public class Game extends Frame implements KeyListener, MouseListener {
 
@@ -71,6 +66,10 @@ public class Game extends Frame implements KeyListener, MouseListener {
 	 * Array of Traffic Hazards, continuously moving on the window
 	 */
 	private Traffic[] traffic = new Traffic[10];
+	
+	private TrafficThread trafficThread;
+	
+	public boolean running;// = true;
 
 	/**
 	 * Play again button
@@ -99,14 +98,16 @@ public class Game extends Frame implements KeyListener, MouseListener {
 		addWindowListener(window);
 		
 		addKeyListener(this);
+		addMouseListener(this);
 
 		frogger = new Frogger();
-		timerDisplay = new TimerDisplay(this, 10);
+		timerDisplay = new TimerDisplay(this, 50);
 		butt = new Button("Try Again", 175, 13*SCALE, 50, 50);
 		initialize(traffic);
-
-		repaint();
-		
+		running = true;
+		trafficThread = new TrafficThread(this);
+		trafficThread.start();
+	
 		initializationComplete = true;
 	}
 
@@ -114,25 +115,25 @@ public class Game extends Frame implements KeyListener, MouseListener {
 		// initializes trucks
 		for(int i = 0; i < movingObjects.length/2; i++) {
 
-			if (i % 2 == 0)
+			if (i % 2 == 0) 	// [0], [2], [4] 	RIGHT
 				movingObjects[i] = new HighwayTraffic(this, Color.green, 2, (20*(i%2))*SCALE, (i+16)*SCALE);
-			else
+			else				// [1], [3] 		LEFT
 				movingObjects[i] = new HighwayTraffic(this, Color.pink, 3, (20*(i%2))*SCALE, (i+16)*SCALE);
 		}
 
 		// initializes logs
 		for(int i = movingObjects.length/2; i < movingObjects.length; i++) {
-			if (i % 2 == 0)
-				movingObjects[i] = new RiverTraffic(this, Color.white, 3, (20*(i%2))*SCALE, (i+2)*SCALE);
-			else
+			if (i % 2 == 0)	// [6], [8] 		RIGHT
 				movingObjects[i] = new RiverTraffic(this, Color.white, 2, (20*(i%2))*SCALE, (i+2)*SCALE);
+			else			// [5], [7], [9]	LEFT
+				movingObjects[i] = new RiverTraffic(this, Color.white, 3, (40*(i%2))*SCALE, (i+2)*SCALE);
 		}
 		
-		for(int i = 0; i<traffic.length; i++) {
-			if (i % 2 == 0)
-				traffic[i].movingRight();
-			else
-				traffic[i].movingLeft();
+		for(int i = 0; i < traffic.length; i++) {
+			if (i % 2 == 0)		// even, starts at index [0] -> [8]
+				movingObjects[i].movingRight();
+			else				// odd; starts at index [1] -> [9]
+				movingObjects[i].movingLeft();
 		}
 	}
 
@@ -144,28 +145,53 @@ public class Game extends Frame implements KeyListener, MouseListener {
 		Graphics2D pane2 = (Graphics2D)pane;
 		Font myFont = new Font("Monospaced", NORMAL, 20);
 
+		getBackground(pane);
+		
 		if (gameStarted) {
 			startTime();
 			checkCollision();
 		}
-		else if(dead) {	
+		else if(dead) {
 			pane2.setFont(myFont);
 			pane2.setColor(Color.red);
 			pane2.drawString("Game Over!", 150, 13*SCALE);
-			frogger.lives -= 1;
-			butt.paint(pane2);
+			if (frogger.lives != 0)
+				butt.paint(pane2);
 		}
 
 		if (initializationComplete) {
 			pane2.setFont(myFont);
 			pane2.setColor(Color.WHITE);
 			pane2.drawString("Frogger!", 150, 2*SCALE);
-			frogger.paint(pane);
+			
 			timerDisplay.paint(pane);
-			for(int i=0; i<traffic.length; i++){
-				traffic[i].x = traffic[i].x % (10*SCALE);
+			//logs drawn first to draw frogger on top [5] -> [9]
+			for(int i = traffic.length/2; i < traffic.length; i++){
+				traffic[i].x= (traffic[i].x) % (10*SCALE);
 				traffic[i].paint(pane);
 			}
+			frogger.paint(pane);
+			// trucks drawn last so frogger = roadkill [0] -> [4]
+			for (int i = 0; i < traffic.length/2; i++){
+				traffic[i].x = (traffic[i].x ) % (10*SCALE);
+				traffic[i].paint(pane);
+			}
+		}
+	}
+	
+	private void getBackground(Graphics pane) {
+		pane.setColor(Color.blue);
+		pane.fillRect(0, 7*SCALE,  20*SCALE, 5*SCALE);	// WATER
+		
+		Color DARK_GREEN = new Color(30, 200, 50);
+		pane.setColor(DARK_GREEN);
+		pane.fillRect(0, 5*SCALE, 20*SCALE, SCALE);	// BUSHES
+		
+		for(int i = 0; i < 11; i += 2) {
+			pane.setColor(DARK_GREEN);
+			pane.fillRect(2*i*SCALE-SCALE, 6*SCALE, 2*SCALE, SCALE);	// bushes
+			pane.setColor(Color.yellow);
+			pane.fillOval((i*2*SCALE)+25, 6*SCALE, SCALE+10, SCALE);	// GOLDEN LILY PADS
 		}
 	}
 
@@ -192,10 +218,12 @@ public class Game extends Frame implements KeyListener, MouseListener {
 	 */
 	private void gameOver() {
 		timerDisplay.stopTime();
-		for(int i = 0; i < traffic.length; i++)
-			traffic[i].stopTraffic();
+		running = false;
 		Toolkit.getDefaultToolkit().beep();
 		repaint();
+		if(frogger.lives == 0) {}
+			System.out.println("Frogger = " + frogger.lives);
+			//end GAME!
 	}
 
 	/**
@@ -203,12 +231,14 @@ public class Game extends Frame implements KeyListener, MouseListener {
 	 * drownt. 
 	 */
 	private void checkCollision() {
-		for(int i = 0; i<traffic.length; i++){
-			if (traffic[i].isInside(frogger.getX(), frogger.getY())) {
+		for (int i = 0; i < traffic.length/2; i++){
+			if (traffic[i].isInside(frogger.getX()-1, frogger.getY()+1))
 				dead = true;
-				gameOver();
-			}
-		}	
+		}
+		for(int i = traffic.length/2; i < traffic.length; i++){
+			if (!traffic[i].isInside(frogger.getX()-1, frogger.getY()+1))
+				dead = true;
+		}
 		if (dead)
 			gameOver();
 	}
@@ -251,10 +281,11 @@ public class Game extends Frame implements KeyListener, MouseListener {
 		int x = e.getX();
 		int y = e.getY();
 
+		System.out.println("X: " + x + ", Y: " + y);
+		
 		if (butt.isInside(x, y)) {
-			Traffic[] traffic = new Traffic[10];
-			initialize(traffic);
-			timerDisplay = new TimerDisplay(this, 10);
+			running = true;
+			timerDisplay = new TimerDisplay(this, 50);
 			frogger.reset();
 			dead = false;
 			initializationComplete = true;

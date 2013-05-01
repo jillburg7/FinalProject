@@ -1,7 +1,6 @@
-package movingObjects;
+
 
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Shape;
 
@@ -18,17 +17,12 @@ public abstract class Traffic {
 	/**
 	 * refresh the timer graphics
 	 */
-	private Frame gameFrame;
-	
-	/**
-	 * refresh the timer
-	 */
-	public boolean running = false;
+	private Game gameFrame;
 
 	/**
 	 * Thread that animates the movement of traffic objects
 	 */
-	private TrafficThread movingHazard;
+//	private TrafficThread movingHazard;
 	
 	/**
 	 * Speed of object moving across display
@@ -71,14 +65,13 @@ public abstract class Traffic {
 	 */
 	protected Shape[] trucks;
 	
-	
 	public Traffic() {}
 	
-	public Traffic(Frame mainGame) {
+	public Traffic(Game mainGame, int someX) {
 		gameFrame = mainGame;
-		movingHazard = new TrafficThread(this);
-		running = true;
-		movingHazard.start();
+//		movingHazard = new TrafficThread(this);
+//		running = true;
+//		movingHazard.start();
 		setup();
 	}
 	
@@ -95,23 +88,23 @@ public abstract class Traffic {
 	 * Amount to redraw the objects moving left
 	 */
 	public void movingLeft(){
-		move -= 2*movingHazard.counter;
-		
+		move = -5;
+		x=400;
 	}
 	
 	/**
 	 * Amount to redraw the objects moving right
 	 */
 	public void movingRight(){
-		move += 2*movingHazard.counter;
+		move = 5;
 	}
 	
 	
 	/**
 	 * Controls how fast the highway traffic is moving
 	 */
-	public void speed(int mph) {
-		movingHazard.setSpeed(mph);
+	public void saved() {
+		if (move < 0){}	// moving Left <-
 	}
 	
 	/**
@@ -120,8 +113,8 @@ public abstract class Traffic {
 	 * @param pane	to paint...nothing here :)
 	 */
 	public void paint(Graphics pane) {
-		x += move;
-		
+		if(gameFrame.running)
+			x = x + move;	
 	}
 	
 	/**
@@ -149,7 +142,7 @@ public abstract class Traffic {
 	 * to be refreshed to animate moving across the screen.
 	 */
 	protected void takeNotice() {
-		if (running)
+		if (gameFrame.running)
 			gameFrame.repaint();
 	}
 	
@@ -158,12 +151,11 @@ public abstract class Traffic {
 	 * and rounds, until game is over = no more Frogger lives. RIP
 	 */
 	public void stopTraffic() {
-		running = false;
-		movingHazard.stop();
+		gameFrame.running = false;
 	}
 	
 	public void restart() {
-		running = true;
+		gameFrame.running = true;
 		
 	}
 }

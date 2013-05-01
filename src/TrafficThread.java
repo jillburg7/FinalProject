@@ -1,4 +1,4 @@
-package movingObjects;
+
 
 /**
  * Traffic class defines the animation of objects in the window.
@@ -26,6 +26,8 @@ public class TrafficThread extends Thread {
 	
 	private long lastFrame = 0;
 	
+	private Game mainGameFrame;
+	
 	/**
 	 * Default constructor.
 	 * No objects are notified of the game timer.
@@ -40,9 +42,10 @@ public class TrafficThread extends Thread {
 	 * Constructor intializes the object
 	 * @param someTraffic	object to notify
 	 */
-	public TrafficThread(Traffic someTraffic) {
+	public TrafficThread(Game mainGame) {
 		super("TrafficThread");		// a name for the thread
-		moveObject = someTraffic;	// object to notify
+//		moveObject = someTraffic;	// object to notify
+		mainGameFrame = mainGame;
 		speedScale = 100;
 	}	
 	
@@ -66,11 +69,13 @@ public class TrafficThread extends Thread {
 		lastFrame = System.nanoTime() - speedScale;
 		
 		try {
-			while (true) {
-				counter++;		// increment counter
-				Thread.sleep(speedScale - (System.nanoTime() - lastFrame) / 1000000);
-				lastFrame = System.nanoTime();
-				moveObject.takeNotice();
+			while(true) {
+					counter++;		// increment counter
+					Thread.sleep(speedScale - (System.nanoTime() - lastFrame) / 1000000);
+					lastFrame = System.nanoTime();
+					mainGameFrame.repaint();
+//					System.out.println("sucks to be you");
+//					moveObject.takeNotice();
 			}
 		} catch (InterruptedException iex) {
 			System.out.println("sucks to be you");

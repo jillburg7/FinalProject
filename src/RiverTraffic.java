@@ -1,6 +1,5 @@
-package movingObjects;
+
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -12,6 +11,9 @@ import java.awt.Rectangle;
  * @author JillianJiggs
  */
 public class RiverTraffic extends Traffic {
+	protected int saveMe;
+	int length;
+	
 	/**
 	 * Default constructor - calls parent constructor
 	 */
@@ -25,14 +27,13 @@ public class RiverTraffic extends Traffic {
 	 * @param someX
 	 * @param someY
 	 */
-	public RiverTraffic(Frame mainGame, Color c, int amount, int someX, int someY) {
-		super(mainGame);
+	public RiverTraffic(Game mainGame, Color c, int amount, int someX, int someY) {
+		super(mainGame, someX);
 		x = someX;
 		y = someY;
 		color = Color.blue;
 		xCoords = new int[amount];
-		for(int i=0; i<xCoords.length; i++)
-			xCoords[i] = x+(i*20*SCALE/amount);
+		saveMe = someX;
 		trucks = new Rectangle[amount];
 		setupArray();
 	}
@@ -44,20 +45,26 @@ public class RiverTraffic extends Traffic {
 	 * @param someX
 	 * @param someY
 	 */
-	public RiverTraffic(Frame mainGame, Color c, int someX, int someY) {
-		super(mainGame);
-		x = someX;
-		y = someY;
-		color = c;
-		setup();
-	}
+//	public RiverTraffic(Game mainGame, Color c, int someX, int someY) {
+//		super(mainGame);
+//		x = someX;
+//		y = someY;
+//		color = c;
+//		setup();
+//	}
 	
 	/**
 	 * Sets up river objects to draw
 	 */
 	protected void setup() {
 		super.setup();
-		object = new Rectangle(x, y, width, height);
+		double factor = Math.random();
+		if (factor <= 0.15)
+			length = (int) ((factor + 0.25) * 200);
+		else if (factor >= .50)
+			length = 100;
+		else
+			length = (int) (factor * 200);
 	}
 
 	
@@ -67,11 +74,11 @@ public class RiverTraffic extends Traffic {
 	 * default setup() array.
 	 */
 	private void setupArray(){
-		width = 2*SCALE;
+//		length = 2*SCALE;
 		height = SCALE;
-		for (int i =0; i < xCoords.length; i++)
-			trucks[i] = new Rectangle(xCoords[i], y, width, height);
-		movingRight();
+//		for (int i =0; i < xCoords.length; i++)
+//			trucks[i] = new Rectangle(xCoords[i], y, length, height);
+//		movingRight();
 	}
 	
 	/**
@@ -81,26 +88,8 @@ public class RiverTraffic extends Traffic {
 	public void paint(Graphics pane) {
 		super.paint(pane);
 		Graphics2D pane2 = (Graphics2D)pane;
-//		drawLog(pane2);
-//		pane2.setBackground(Color.BLUE);
-		for(int i=0; i<xCoords.length; i++) {
-			xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
-			trucks[i] = new Rectangle(xCoords[i], y, width, height);
-			pane2.draw(trucks[i]);
-			pane2.setColor(Color.orange);
-			pane2.fill(trucks[i]);
-		}
-	}
-	
-	/**
-	 * To draw one moving log
-	 * @param pane2 to draw with 
-	 */
-	private void drawLog(Graphics2D pane){
-		pane.setColor(color);
-		pane.draw3DRect(x, y, width, height, true);
-		pane.setColor(Color.ORANGE);
-		pane.fill3DRect(x+1, y+1, width-1, height-1, true);
+//		Color color = new Color(139, 69, 19);
+		drawLogs(pane2);
 	}
 
 	/**
@@ -108,7 +97,15 @@ public class RiverTraffic extends Traffic {
 	 * @param pane
 	 */
 	private void drawLogs(Graphics2D pane) {
-		
+		Color BROWN = new Color(205, 133, 63); // LIGHT BROWN
+		for(int i=0; i<xCoords.length; i++) {
+			xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
+			trucks[i] = new Rectangle(xCoords[i], y, length, height);
+			pane.setColor(Color.BLACK);
+			pane.draw(trucks[i]);
+			pane.setColor(BROWN);
+			pane.fill(trucks[i]);
+		}
 	}
 
 	/**
@@ -118,10 +115,10 @@ public class RiverTraffic extends Traffic {
 	public boolean isInside(int xPoint, int yPoint) {
 		boolean isInside = false;
 		for(int i = 0; i < trucks.length; i++) {
-			if(trucks[i].contains(xPoint, yPoint) || trucks[i].contains(xPoint+SCALE, yPoint))
+			if(!trucks[i].contains(xPoint, yPoint) || !trucks[i].contains(xPoint+SCALE, yPoint))
 				return true;
 		}
-		return isInside;
+		return false;
 	}
 	
 }

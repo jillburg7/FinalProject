@@ -1,4 +1,4 @@
-package movingObjects;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -46,16 +46,8 @@ public class Frogger implements Comparable<Traffic> {
 	public void move(int horizontal, int vertical){
 		if ((x+horizontal+1)>0 && (x+horizontal)<(20*SCALE))
 			x = x + horizontal;
-		if ((y+vertical)>(3*SCALE) && (y+vertical)<(23*SCALE))
+		if ((y+vertical)>(5*SCALE) && (y+vertical)<(23*SCALE))
 			y = y + vertical;	
-	}
-	
-	/**
-	 * Handles what happens when Frogger loses a life
-	 */
-	public void dead() {
-		System.out.println("Frogger = dead");
-		
 	}
 	
 	
@@ -81,7 +73,7 @@ public class Frogger implements Comparable<Traffic> {
 	}
 	
 	private void drawLives(Graphics2D pane) {
-		for(int i = 0; i < livesLeft(); i++) {
+		for(int i = 0; i < lives; i++) {
 			pane.drawOval(20+(5*i*SCALE/6), 24*SCALE, SCALE/2, SCALE/2);
 			pane.fillOval(20+(5*i*SCALE/6), 24*SCALE, SCALE/2, SCALE/2);
 		}
@@ -104,11 +96,13 @@ public class Frogger implements Comparable<Traffic> {
 	}
 	
 	protected int livesLeft() {
+		System.out.println("Lives left = " + lives);
 		return lives;
 	}
 	
 	public void reset() {
 		System.out.println("Frogger = dead");
+		lives -= 1;
 		x = 9*SCALE;
 		y = 23*SCALE;
 	}

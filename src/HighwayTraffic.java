@@ -1,6 +1,5 @@
-package movingObjects;
+
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -27,14 +26,15 @@ public class HighwayTraffic extends Traffic {
 	 * @param someX
 	 * @param someY
 	 */
-	public HighwayTraffic(Frame mainGame, Color c, int amount, int someX, int someY) {
-		super(mainGame);
+	public HighwayTraffic(Game mainGame, Color c, int amount, int someX, int someY) {
+		super(mainGame, someX);
 		x = someX;
 		y = someY;
 		color = c;
 		xCoords = new int[amount];
-		for(int i=0; i<xCoords.length; i++)
-			xCoords[i] = x+(i*20*SCALE/amount);
+//		if x
+//		for(int i=0; i<xCoords.length; i++)
+//			xCoords[i] = x+(i*20*SCALE/amount);
 		trucks = new Rectangle[amount];
 		setupArray();
 	}
@@ -46,20 +46,19 @@ public class HighwayTraffic extends Traffic {
 	 * @param someX
 	 * @param someY
 	 */
-	public HighwayTraffic(Frame mainGame, Color c, int someX, int someY) {
-		super(mainGame);
-		x = someX;
-		y = someY;
-		color = c;
-		setup();
-	}
+//	public HighwayTraffic(Game mainGame, Color c, int someX, int someY) {
+//		super(mainGame);
+//		x = someX;
+//		y = someY;
+//		color = c;
+//		setup();
+//	}
 	
 	/**
 	 * Sets up truck objects to draw
 	 */
 	protected void setup() {
 		super.setup();
-		object = new Rectangle(x, y, width, height);
 	}
 	
 	/**
@@ -68,11 +67,11 @@ public class HighwayTraffic extends Traffic {
 	 * default setup() array.
 	 */
 	private void setupArray(){
-		width = (int) (2*SCALE);
+		width = (int) (1.75*SCALE);
 		height = SCALE;
-		for (int i =0; i < xCoords.length; i++)
-			trucks[i] = new Rectangle(xCoords[i], y, width, height);
-		movingRight();
+//		for (int i =0; i < xCoords.length; i++)
+//			trucks[i] = new Rectangle(xCoords[i], y, width, height);
+//		movingRight();
 	}
 	
 	
@@ -87,21 +86,6 @@ public class HighwayTraffic extends Traffic {
 	}
 	
 	/**
-	 * To draw one moving truck
-	 * @param pane2
-	 */
-	private void drawTruck(Graphics2D pane2){
-		pane2.setColor(color);
-		pane2.draw3DRect(x, y, width, height, true);
-		if (move < 0)
-			pane2.draw3DRect(x-SCALE/2, y+1, width/4, height-2, true);
-		else
-			pane2.draw3DRect(x+width, y+1, width/4, height-2, true);
-		pane2.setColor(Color.LIGHT_GRAY);
-		pane2.fill3DRect(x+1, y+1, width-1, height-1, true);
-	}
-	
-	/**
 	 * To draw moving trucks
 	 * @param pane
 	 */
@@ -109,14 +93,19 @@ public class HighwayTraffic extends Traffic {
 		for(int i=0; i<xCoords.length; i++) {
 			xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
 			pane.setColor(color);
-			trucks[i] = new Rectangle(xCoords[i], y, width, height);
-			pane.draw(trucks[i]);
+			
 			
 			// this isn't being checked for collision!! - fix
-			if (move < 0)
-				pane.draw(new Rectangle(xCoords[i]-SCALE/2, y+1, width/4, height-2));
-			else
+			if (move < 0) {	// moving LEFT
+//				xCoords[i] = x-(i*20*SCALE/xCoords.length);	// updates position
+				pane.draw(new Rectangle(xCoords[i]-width/4, y+1, width/4, height-2));
+			}
+			else {	// MOVING RIGHT
+//				xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
 				pane.draw(new Rectangle(xCoords[i]+width, y+1, width/4, height-2));
+			}
+			trucks[i] = new Rectangle(xCoords[i], y, width, height);
+			pane.draw(trucks[i]);
 			pane.setColor(Color.LIGHT_GRAY);
 			pane.fill(new Rectangle(xCoords[i]+1, y+1, width-1, height-1));
 		}
@@ -132,7 +121,7 @@ public class HighwayTraffic extends Traffic {
 	public boolean isInside(int xPoint, int yPoint) {
 		boolean isInside = false;
 		for(int i = 0; i < trucks.length; i++) {
-			if(trucks[i].contains(xPoint, yPoint) || trucks[i].contains(xPoint+SCALE, yPoint))
+			if((trucks[i].contains(xPoint, yPoint)) || (trucks[i].contains(xPoint+SCALE, yPoint)))
 				return true;
 		}
 		return isInside;
