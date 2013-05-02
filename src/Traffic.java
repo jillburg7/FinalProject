@@ -35,10 +35,9 @@ public abstract class Traffic {
 	protected final int SCALE = 20;
 	
 	/**
-	 * Dimensions and location of trucks
+	 * Dimensions and location of objects
 	 */
-	public int x;
-	protected int y, width, height;
+	protected int x, y, width, height;
 
 	/**
 	 * Color to paint objects
@@ -56,23 +55,27 @@ public abstract class Traffic {
 	protected int move;
 	
 	/**
-	 * To draw objects
+	 * Flag for initialization
 	 */
-	protected Shape object;
+	protected boolean startedUp = false;
 	
 	/**
 	 * To draw multiple moving objects in the same "lane" of traffic
 	 */
-	protected Shape[] trucks;
+	protected Shape[] objects;
 	
+	private int justIncase;
+	
+	
+	/**
+	 * Default constructor for Traffic objects
+	 */
 	public Traffic() {}
 	
 	public Traffic(Game mainGame, int someX) {
 		gameFrame = mainGame;
-//		movingHazard = new TrafficThread(this);
-//		running = true;
-//		movingHazard.start();
-		setup();
+		x = someX;
+		justIncase = someX;
 	}
 	
 	/**
@@ -89,7 +92,7 @@ public abstract class Traffic {
 	 */
 	public void movingLeft(){
 		move = -5;
-		x=400;
+//		x=400;
 	}
 	
 	/**
@@ -104,7 +107,9 @@ public abstract class Traffic {
 	 * Controls how fast the highway traffic is moving
 	 */
 	public void saved() {
-		if (move < 0){}	// moving Left <-
+		if (move < 0) {}	// moving Left <-
+		
+		x = justIncase;
 	}
 	
 	/**
@@ -113,8 +118,11 @@ public abstract class Traffic {
 	 * @param pane	to paint...nothing here :)
 	 */
 	public void paint(Graphics pane) {
-		if(gameFrame.running)
-			x = x + move;	
+		if(gameFrame.running) {
+			x = x + move;	// moves objects position even time its repainted
+			for(int i = 0; i < xCoords.length; i++)
+				xCoords[i] = xCoords[i] + move;
+		}
 	}
 	
 	/**
@@ -123,6 +131,10 @@ public abstract class Traffic {
 	 */
 	public int[] getxCoords() {
 		return xCoords;
+	}
+	
+	public int getX() {
+		return x;
 	}
 	
 	public int getY() {

@@ -74,8 +74,6 @@ public class TrafficThread extends Thread {
 					Thread.sleep(speedScale - (System.nanoTime() - lastFrame) / 1000000);
 					lastFrame = System.nanoTime();
 					mainGameFrame.repaint();
-//					System.out.println("sucks to be you");
-//					moveObject.takeNotice();
 			}
 		} catch (InterruptedException iex) {
 			System.out.println("sucks to be you");

@@ -67,6 +67,7 @@ public class Game extends Frame implements KeyListener, MouseListener {
 	 */
 	private Traffic[] traffic = new Traffic[10];
 	
+	
 	private TrafficThread trafficThread;
 	
 	public boolean running;// = true;
@@ -77,6 +78,8 @@ public class Game extends Frame implements KeyListener, MouseListener {
 	private Button butt;
 
 
+	private Traffic[] trucks = new Traffic[3];
+	
 	/**
 	 * Starts game
 	 */
@@ -116,20 +119,20 @@ public class Game extends Frame implements KeyListener, MouseListener {
 		for(int i = 0; i < movingObjects.length/2; i++) {
 
 			if (i % 2 == 0) 	// [0], [2], [4] 	RIGHT
-				movingObjects[i] = new HighwayTraffic(this, Color.green, 2, (20*(i%2))*SCALE, (i+16)*SCALE);
+				movingObjects[i] = new HighwayTraffic(this, Color.green, 2, 0, (i+16)*SCALE);
 			else				// [1], [3] 		LEFT
-				movingObjects[i] = new HighwayTraffic(this, Color.pink, 3, (20*(i%2))*SCALE, (i+16)*SCALE);
+				movingObjects[i] = new HighwayTraffic(this, Color.pink, 3, (40*(i%2))*SCALE, (i+16)*SCALE);
 		}
 
 		// initializes logs
 		for(int i = movingObjects.length/2; i < movingObjects.length; i++) {
 			if (i % 2 == 0)	// [6], [8] 		RIGHT
-				movingObjects[i] = new RiverTraffic(this, Color.white, 2, (20*(i%2))*SCALE, (i+2)*SCALE);
+				movingObjects[i] = new RiverTraffic(this, Color.white, 2, 0, (i+2)*SCALE);
 			else			// [5], [7], [9]	LEFT
-				movingObjects[i] = new RiverTraffic(this, Color.white, 3, (40*(i%2))*SCALE, (i+2)*SCALE);
+				movingObjects[i] = new RiverTraffic(this, Color.gray, 3, (40*(i%2))*SCALE, (i+2)*SCALE);
 		}
 		
-		for(int i = 0; i < traffic.length; i++) {
+		for(int i = 0; i < movingObjects.length; i++) {
 			if (i % 2 == 0)		// even, starts at index [0] -> [8]
 				movingObjects[i].movingRight();
 			else				// odd; starts at index [1] -> [9]
@@ -165,15 +168,26 @@ public class Game extends Frame implements KeyListener, MouseListener {
 			pane2.drawString("Frogger!", 150, 2*SCALE);
 			
 			timerDisplay.paint(pane);
+			
 			//logs drawn first to draw frogger on top [5] -> [9]
 			for(int i = traffic.length/2; i < traffic.length; i++){
-				traffic[i].x= (traffic[i].x) % (10*SCALE);
+//				System.out.println(traffic[i].getxCoords()[0] + "  "+ traffic[0].getxCoords()[1]);
+				if (traffic[i].move < 0)		// LEFT
+					traffic[i].x= (traffic[i].getX()) % (10*SCALE);
+				else if (traffic[i].move > 0)	// RIGHT
+					traffic[i].x= (traffic[i].getX()) % (20*SCALE);
 				traffic[i].paint(pane);
 			}
+			
+			
 			frogger.paint(pane);
+			
 			// trucks drawn last so frogger = roadkill [0] -> [4]
 			for (int i = 0; i < traffic.length/2; i++){
-				traffic[i].x = (traffic[i].x ) % (10*SCALE);
+				if (traffic[i].move < 0)		// LEFT
+					traffic[i].x = (traffic[i].getX() ) % (10*SCALE);
+				else if (traffic[i].move > 0)	// RIGHT
+					traffic[i].x= (traffic[i].getX()) % (10*SCALE);
 				traffic[i].paint(pane);
 			}
 		}
