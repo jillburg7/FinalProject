@@ -31,14 +31,11 @@ public class HighwayTraffic extends Traffic {
 	public HighwayTraffic(Game mainGame, Color c, int amount, int someX, int someY) {
 		super(mainGame, someX);
 		x = someX;
-//		x = someX + ((int) Math.random()*100);
-//		System.out.println("X-truck postion = " + x);
 		y = someY;
 		color = c;
 		xCoords = new int[amount];
 		objects = new Rectangle[amount];
 		setup();
-		startedUp = true;
 	}
 	
 	/**
@@ -48,8 +45,6 @@ public class HighwayTraffic extends Traffic {
 		super.setup();
 		width = (int) (1.75*SCALE);
 	}
-
-	
 	
 	/**
 	 * Draws highway objects
@@ -66,23 +61,18 @@ public class HighwayTraffic extends Traffic {
 	 * @param pane
 	 */
 	private void drawTrucks(Graphics2D pane) {
-		
 		for(int i=0; i<xCoords.length; i++) {
 			xCoords[i] = x + (i*20*SCALE/xCoords.length);	// updates position
 			objects[i] = new Rectangle(xCoords[i], y, width, height); //draws actual trucks
 			pane.setColor(color);
 			pane.draw(objects[i]);
-//			System.out.println("Coords = " + xCoords[0] + ", " + xCoords[1]);
-// this isn't being checked for collision!! - fix:			
+
 			//front of truck
-			if (move < 0) {	// moving LEFT
-//				xCoords[i] = x-(i*20*SCALE/xCoords.length);	// updates position
+			if (move < 0) 	// moving LEFT
 				pane.draw(new Rectangle(xCoords[i]-width/4, y+1, width/4, height-2));
-			}
-			else {	// MOVING RIGHT
-//				xCoords[i] = x+(i*20*SCALE/xCoords.length);	// updates position
+			
+			else 	// MOVING RIGHT
 				pane.draw(new Rectangle(xCoords[i]+width, y+1, width/4, height-2));
-			}
 			
 			pane.setColor(Color.LIGHT_GRAY);
 			pane.fill(new Rectangle(xCoords[i]+1, y+1, width-1, height-1));

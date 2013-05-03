@@ -29,16 +29,15 @@ public class RiverTraffic extends Traffic {
 	 * @param someX
 	 * @param someY
 	 */
-	public RiverTraffic(Game mainGame, Color c, int amount, int someX, int someY) {
+	public RiverTraffic(Game mainGame, int amount, int someX, int someY) {
 		super(mainGame, someX);
 		saveMe = someX;
 		x = someX;
 		y = someY;
-		color = c;
+		color = new Color(205, 133, 63); // LIGHT BROWN
 		xCoords = new int[amount];
 		objects = new Rectangle[amount];
 		setup();
-		startedUp = true;
 	}
 
 	
@@ -74,7 +73,6 @@ public class RiverTraffic extends Traffic {
 	 * @param pane
 	 */
 	private void drawLogs(Graphics2D pane) {
-		Color BROWN = new Color(205, 133, 63); // LIGHT BROWN
 		
 		for(int i=0; i<xCoords.length; i++) {
 			xCoords[i] = x + (i*20*SCALE/xCoords.length);	// updates position
@@ -82,8 +80,9 @@ public class RiverTraffic extends Traffic {
 			
 			pane.setColor(Color.BLACK);
 			pane.draw(objects[i]);
-			pane.setColor(BROWN);
-			pane.fill(objects[i]);
+			pane.setColor(color);
+//			pane.fill(objects[i]);
+			pane.fill(new Rectangle(xCoords[i]+1, y+1, width-1, height-1));
 		}
 	}
 
@@ -94,7 +93,7 @@ public class RiverTraffic extends Traffic {
 	public boolean isInside(int xPoint, int yPoint) {
 		boolean isInside = false;
 		for(int i = 0; i < objects.length; i++) {
-			if(objects[i].contains(xPoint, yPoint) || objects[i].contains(xPoint+SCALE, yPoint))
+			if(!objects[i].contains(xPoint, yPoint) || !objects[i].contains(xPoint+SCALE, yPoint))
 				return true;
 		}
 		return isInside;

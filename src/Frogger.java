@@ -10,7 +10,7 @@ import java.awt.Graphics2D;
  *  @author JillianJiggs
  *
  */
-public class Frogger implements Comparable<Traffic> {
+public class Frogger {
 
 	/**
 	 * Object scale factor
@@ -20,12 +20,12 @@ public class Frogger implements Comparable<Traffic> {
 	/**
 	 * Location of Frogger
 	 */
-	public int x, y;
+	private int x, y;
 	
 	/**
 	 * Froggers lives
 	 */
-	public int lives;
+	private int lives;
 	
 	/** 
 	 * Default constructor
@@ -37,8 +37,7 @@ public class Frogger implements Comparable<Traffic> {
 		lives = 3;
 	}
 	
-	
-	/**
+		/**
 	 * Moves Frogger in the direction specified by keyboard 
 	 * @param horizontal
 	 * @param vertical
@@ -49,7 +48,6 @@ public class Frogger implements Comparable<Traffic> {
 		if ((y+vertical)>(5*SCALE) && (y+vertical)<(23*SCALE))
 			y = y + vertical;	
 	}
-	
 	
 	/**
 	 * Draws Frogger
@@ -96,7 +94,6 @@ public class Frogger implements Comparable<Traffic> {
 	}
 	
 	protected int livesLeft() {
-		System.out.println("Lives left = " + lives);
 		return lives;
 	}
 	
@@ -105,26 +102,5 @@ public class Frogger implements Comparable<Traffic> {
 		lives -= 1;
 		x = 9*SCALE;
 		y = 23*SCALE;
-	}
-	
-
-	/**
-	 * Whether or not frogger has collided with harmful obstacle. RIP
-	 * @return a negative integer, zero, or a positive integer
-	 * 			as this object is less than, equal to, or greater
-	 * 			than the specified object.
-	 */
-	@Override
-	public int compareTo(Traffic o) {
-		int[] xLoc = o.xCoords;
-		for(int i = 0; i < o.xCoords.length; i++) {
-			if (x < xLoc[i])
-				return -1;
-			else if (x > xLoc [i])
-				return 1;
-			else
-				return 0;
-		}
-		return 0;
 	}
 }

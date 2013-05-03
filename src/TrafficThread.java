@@ -8,11 +8,6 @@
 public class TrafficThread extends Thread {
 	
 	/**
-	 * The object to notify to update position
-	 */
-	private Traffic moveObject;
-	
-	/**
 	 * Time it takes to start at one side of the window and get to the
 	 * other side.
 	 */
@@ -24,8 +19,14 @@ public class TrafficThread extends Thread {
 	 */
 	private int speedScale;
 	
+	/**
+	 * 
+	 */
 	private long lastFrame = 0;
 	
+	/**
+	 * 
+	 */
 	private Game mainGameFrame;
 	
 	/**
@@ -34,17 +35,15 @@ public class TrafficThread extends Thread {
 	 */
 	public TrafficThread() {
 		super("TrafficThread");	// a name for the thread
-		moveObject = null;		// no one will be notified
 		speedScale = 100;
 	}
 	
 	/**
 	 * Constructor intializes the object
-	 * @param someTraffic	object to notify
+	 * @param mainGame	game to notify when necessary
 	 */
 	public TrafficThread(Game mainGame) {
 		super("TrafficThread");		// a name for the thread
-//		moveObject = someTraffic;	// object to notify
 		mainGameFrame = mainGame;
 		speedScale = 100;
 	}	

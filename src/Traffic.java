@@ -18,16 +18,6 @@ public abstract class Traffic {
 	 * refresh the timer graphics
 	 */
 	private Game gameFrame;
-
-	/**
-	 * Thread that animates the movement of traffic objects
-	 */
-//	private TrafficThread movingHazard;
-	
-	/**
-	 * Speed of object moving across display
-	 */
-	private int speed;
 	
 	/**
 	 * Object scale factor
@@ -55,27 +45,23 @@ public abstract class Traffic {
 	protected int move;
 	
 	/**
-	 * Flag for initialization
-	 */
-	protected boolean startedUp = false;
-	
-	/**
 	 * To draw multiple moving objects in the same "lane" of traffic
 	 */
 	protected Shape[] objects;
-	
-	private int justIncase;
-	
 	
 	/**
 	 * Default constructor for Traffic objects
 	 */
 	public Traffic() {}
 	
+	/**
+	 * 
+	 * @param mainGame
+	 * @param someX
+	 */
 	public Traffic(Game mainGame, int someX) {
 		gameFrame = mainGame;
 		x = someX;
-		justIncase = someX;
 	}
 	
 	/**
@@ -84,7 +70,6 @@ public abstract class Traffic {
 	protected void setup() {
 		width = 2*SCALE;
 		height = SCALE;
-		speed = 1;
 	}
 	
 	/**
@@ -92,7 +77,6 @@ public abstract class Traffic {
 	 */
 	public void movingLeft(){
 		move = -5;
-//		x=400;
 	}
 	
 	/**
@@ -102,14 +86,13 @@ public abstract class Traffic {
 		move = 5;
 	}
 	
-	
 	/**
-	 * Controls how fast the highway traffic is moving
+	 * 
 	 */
-	public void saved() {
-		if (move < 0) {}	// moving Left <-
-		
-		x = justIncase;
+	public void updatePosition() {
+		x = x % (10*SCALE);
+		if (move < 0 && (x % (10*SCALE) == 0))	// LEFT
+			x = 10*SCALE;
 	}
 	
 	/**
@@ -120,8 +103,7 @@ public abstract class Traffic {
 	public void paint(Graphics pane) {
 		if(gameFrame.running) {
 			x = x + move;	// moves objects position even time its repainted
-			for(int i = 0; i < xCoords.length; i++)
-				xCoords[i] = xCoords[i] + move;
+			updatePosition();
 		}
 	}
 	
@@ -133,6 +115,10 @@ public abstract class Traffic {
 		return xCoords;
 	}
 	
+	/**
+	 * @return x-coordinate, which is updated each time the game is 
+	 * repainted
+	 */
 	public int getX() {
 		return x;
 	}
@@ -148,26 +134,5 @@ public abstract class Traffic {
 	 * @return
 	 */
 	public abstract boolean isInside(int xPoint, int yPoint);
-	
-	/**
-	 * While the Hazard thread is running, the traffic graphics need 
-	 * to be refreshed to animate moving across the screen.
-	 */
-	protected void takeNotice() {
-		if (gameFrame.running)
-			gameFrame.repaint();
-	}
-	
-	/**
-	 * Kills game (currently), evently to be used for reset of game 
-	 * and rounds, until game is over = no more Frogger lives. RIP
-	 */
-	public void stopTraffic() {
-		gameFrame.running = false;
-	}
-	
-	public void restart() {
-		gameFrame.running = true;
-		
-	}
+
 }
